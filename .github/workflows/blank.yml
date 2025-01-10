@@ -1,17 +1,53 @@
-name: Automated API tests using Postman CLI
+name: Update Postman Collection
 
-on: push
+on:
+  push:
+    paths:
+      - "IntegracionPostmanGithub.postman_collection.json" # Ruta al archivo JSON de la colección
 
 jobs:
-  automated-api-tests:
+  update-collection:
     runs-on: ubuntu-latest
+
     steps:
+      # Clonar el repositorio
       - uses: actions/checkout@v4
-      - name: Install Postman CLI
+
+      # Configurar Node.js y Axios para actualizar la colección
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "14"
+
+      - name: Install Axios
+        run: npm install axios
+
+      # Crear un archivo temporal para ejecutar el script de Node.js
+      - name: Update Postman Collection
         run: |
-          curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
-      - name: Login to Postman CLI
-        run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
-      - name: Run API tests
-        run: |
-          postman collection run "3945000-2df8c701-2798-4695-a503-0631ed143efb"
+          echo 'const axios = require("axios");
+          const fs = require("fs");
+          const POSTMAN_API_KEY = "${{ secrets.POSTMAN_API_KEY }}";
+          const COLLECTION_UID = "3945000-2df8c701-2798-4695-a503-0631ed143efb";
+          const COLLECTION_FILE = "IntegracionPostmanGithub.postman_collection.json";
+          async function updateCollection() {
+            try {
+              const collectionData = JSON.parse(fs.readFileSync(COLLECTION_FILE, "utf8"));
+              const response = await axios.put(
+                `https://api.getpostman.com/collections/${COLLECTION_UID}`,
+                { collection: collectionData },
+                {
+                  headers: {
+                    "X-Api-Key": POSTMAN_API_KEY,
+                    "Content-Type": "application/json",
+                  },
+                }
+              );
+              console.log("✅ Colección actualizada correctamente:", response.data);
+            } catch (error) {
+              console.error("❌ Error al actualizar la colección:", error.response?.data || error.message);
+              process.exit(1);
+            }
+          }
+          updateCollection();' > updateCollection.js
+          node updateCollection.js
