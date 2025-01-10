@@ -30,7 +30,7 @@ jobs:
           const axios = require("axios");
           const fs = require("fs");
 
-          const POSTMAN_API_KEY = "${{ secrets.POSTMAN_API_KEY }}"; // Clave de API de Postman
+          const POSTMAN_API_KEY = "PMAK-678153aaee70d00001b14140-ed01123afcf461b6279c748d6af4daa92c"; // Clave de API de Postman
           const COLLECTION_UID = "3945000-6ce4f027-b21c-4cde-92f1-3c136ffd3391"; // UID de la colección en Postman
           const COLLECTION_FILE = "IntegracionPostmanGithub.postman_collection.json"; // Ruta al archivo de la colección
 
