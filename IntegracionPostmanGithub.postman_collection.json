@@ -83,7 +83,7 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer ${{ secrets.API_KEY_GITHUB }}"
+						"value": "Bearer {{API_KEY_GITHUB}}"
 					},
 					{
 						"key": "Content-Type",
