@@ -3,7 +3,7 @@ name: Update Postman Collection
 on:
   push:
     paths:
-      - "path/to/collection.json" # Ruta al archivo de la colección en el repositorio
+      - "IntegracionPostmanGithub.postman_collection.json" # Ruta al archivo de la colección en el repositorio
 
 jobs:
   update-collection:
