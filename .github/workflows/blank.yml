@@ -1,19 +1,19 @@
-name: Automated API Tests using Postman CLI
+name: Update Postman Collection
 
 on:
   push:
     paths:
-      - "IntegracionPostmanGithub.postman_collection.json" # Ruta al archivo JSON en el repositorio
+      - "IntegracionPostmanGithub.postman_collection.json" # Ruta al archivo JSON de la colección
 
 jobs:
-  automated-api-tests:
+  update-collection:
     runs-on: ubuntu-latest
 
     steps:
       # Clonar el repositorio
       - uses: actions/checkout@v4
 
-      # Configurar Node.js y Axios para actualizar la colección en Postman
+      # Configurar Node.js y Axios para actualizar la colección
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -22,16 +22,15 @@ jobs:
       - name: Install Axios
         run: npm install axios
 
-      # Actualizar la colección en Postman
+      # Crear un archivo temporal para ejecutar el script de Node.js
       - name: Update Postman Collection
         run: |
-          node <<EOF
-          const axios = require("axios");
+          echo 'const axios = require("axios");
           const fs = require("fs");
 
           const POSTMAN_API_KEY = "${{ secrets.POSTMAN_API_KEY }}";
           const COLLECTION_UID = "3945000-6ce4f027-b21c-4cde-92f1-3c136ffd3391";
-          const COLLECTION_FILE = "IntegracionPostmanGithub.postman_collection.json"; // Ruta al archivo JSON en el repositorio local
+          const COLLECTION_FILE = "IntegracionPostmanGithub.postman_collection.json";
 
           async function updateCollection() {
             try {
@@ -55,19 +54,6 @@ jobs:
             }
           }
 
-          updateCollection();
-          EOF
+          updateCollection();' > updateCollection.js
 
-      # Instalar Postman CLI
-      - name: Install Postman CLI
-        run: |
-          curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
-
-      # Autenticarse con Postman CLI
-      - name: Login to Postman CLI
-        run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
-
-      # Ejecutar las pruebas con la colección actualizada
-      - name: Run API tests
-        run: |
-          postman collection run "3945000-6ce4f027-b21c-4cde-92f1-3c136ffd3391"
+          node updateCollection.js
