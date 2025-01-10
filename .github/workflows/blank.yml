@@ -1,60 +1,17 @@
-name: Update Postman Collection
+name: Automated API tests using Postman CLI
 
-on:
-  push:
-    paths:
-      - "IntegracionPostmanGithub.postman_collection.json" # Ruta al archivo de la colección en el repositorio
+on: push
 
 jobs:
-  update-collection:
+  automated-api-tests:
     runs-on: ubuntu-latest
-
     steps:
-      # Clonar el repositorio
       - uses: actions/checkout@v4
-
-      # Configurar Node.js
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "14"
-
-      # Instalar Axios
-      - name: Install Axios
-        run: npm install axios
-
-      # Actualizar la colección en Postman
-      - name: Update Postman Collection
+      - name: Install Postman CLI
         run: |
-          node <<EOF
-          const axios = require("axios");
-          const fs = require("fs");
-
-          const POSTMAN_API_KEY = "PMAK-678153aaee70d00001b14140-ed01123afcf461b6279c748d6af4daa92c"; // Clave de API de Postman
-          const COLLECTION_UID = "3945000-6ce4f027-b21c-4cde-92f1-3c136ffd3391"; // UID de la colección en Postman
-          const COLLECTION_FILE = "IntegracionPostmanGithub.postman_collection.json"; // Ruta al archivo de la colección
-
-          async function updateCollection() {
-            try {
-              const collectionData = JSON.parse(fs.readFileSync(COLLECTION_FILE, "utf8"));
-
-              const response = await axios.put(
-                `https://api.getpostman.com/collections/${COLLECTION_UID}`,
-                { collection: collectionData },
-                {
-                  headers: {
-                    "X-Api-Key": POSTMAN_API_KEY,
-                    "Content-Type": "application/json",
-                  },
-                }
-              );
-
-              console.log("✅ Colección actualizada correctamente:", response.data);
-            } catch (error) {
-              console.error("❌ Error al actualizar la colección:", error.response?.data || error.message);
-              process.exit(1);
-            }
-          }
-
-          updateCollection();
-          EOF
+          curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+      - name: Login to Postman CLI
+        run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+      - name: Run API tests
+        run: |
+          postman collection run "3945000-6ce4f027-b21c-4cde-92f1-3c136ffd3391"
