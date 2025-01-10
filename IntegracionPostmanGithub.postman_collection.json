@@ -17,7 +17,7 @@
 							"// Lista de flujos disponibles",
 							"const options = [",
 							"    \"1 - Sagaonboarding\",",
-							"    \"2 - login\",",
+							"    \"2 - slogin\",",
 							"    \"3 - cashInRegresion\",",
 							"    \"4 - compras\",",
 							"    \"5 - comprasCuotas\",",
