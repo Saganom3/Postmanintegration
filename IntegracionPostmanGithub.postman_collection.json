@@ -1,10 +1,9 @@
 {
 	"info": {
-		"_postman_id": "fb543098-4ef9-40fd-b363-32d3982829ac",
+		"_postman_id": "b883edf8-f59b-40e6-b2b6-360d8ff27399",
 		"name": "IntegracionPostmanGithub",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "27865398",
-		"_collection_link": "https://blue-station-938095.postman.co/workspace/My-Workspace~ab40a58e-cc36-401e-8ef7-ace996b34cf6/collection/27865398-fb543098-4ef9-40fd-b363-32d3982829ac?action=share&source=collection_link&creator=27865398"
+		"_exporter_id": "3945000"
 	},
 	"item": [
 		{
@@ -83,7 +82,7 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer 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"
+						"value": "Bearer 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"
 					},
 					{
 						"key": "Content-Type",
