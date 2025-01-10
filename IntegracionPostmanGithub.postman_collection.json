@@ -16,7 +16,7 @@
 						"exec": [
 							"// Lista de flujos disponibles",
 							"const options = [",
-							"    \"1 - onboarding\",",
+							"    \"1 - honboarding\",",
 							"    \"2 - login\",",
 							"    \"3 - cashInRegresion\",",
 							"    \"4 - compras\",",
