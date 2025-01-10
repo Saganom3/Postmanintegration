@@ -3,41 +3,43 @@ name: Update Postman Collection
 on:
   push:
     paths:
-      - "IntegracionPostmanGithub.postman_collection.json" # Ruta al archivo de la colección en tu repositorio
+      - "path/to/collection.json"
 
 jobs:
   update-collection:
     runs-on: ubuntu-latest
 
     steps:
-      # Paso 1: Clonar el repositorio
+      # Clona el repositorio
       - uses: actions/checkout@v4
 
-      # Paso 2: Configurar Node.js para usar Axios
+      # Configura Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "14"
 
-      # Paso 3: Instalar Axios para realizar la solicitud a la Postman API
+      # Instala Axios
       - name: Install Axios
         run: npm install axios
 
-      # Paso 4: Actualizar la colección en Postman
+      # Actualiza la colección en Postman
       - name: Update Postman Collection
         run: |
           node <<EOF
           const axios = require("axios");
           const fs = require("fs");
 
+          // Variables de configuración
           const POSTMAN_API_KEY = "${{ secrets.POSTMAN_API_KEY }}";
-          const COLLECTION_UID = "3945000-6ce4f027-b21c-4cde-92f1-3c136ffd3391"; # UID de la colección en Postman
-          const COLLECTION_FILE = "path/to/collection.json"; # Ruta a la colección en el repositorio
+          const COLLECTION_UID = "3945000-6ce4f027-b21c-4cde-92f1-3c136ffd3391"; // UID de la colección en Postman
+          const COLLECTION_FILE = "path/to/collection.json"; // Ruta a la colección en el repositorio
 
           async function updateCollection() {
             try {
               const collectionData = JSON.parse(fs.readFileSync(COLLECTION_FILE, "utf8"));
 
+              // Solicitud para actualizar la colección
               const response = await axios.put(
                 `https://api.getpostman.com/collections/${COLLECTION_UID}`,
                 { collection: collectionData },
