@@ -16,7 +16,7 @@
             "exec": [
               "// Lista de flujos disponibles",
               "const options = [",
-              "    \"1 - wwwonboardingssssss\",",
+              "    \"1 - onboardingssssss\",",
               "    \"2 - eeelogin\",",
               "    \"3 - tttcashInRegresion\",",
               "    \"4 - ddddcompras\",",
