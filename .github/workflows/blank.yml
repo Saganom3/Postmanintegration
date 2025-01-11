@@ -1,9 +1,9 @@
-name: Update Postman Collection
+name: Update Postman Collection with Dynamic Authorization
 
 on:
   push:
     paths:
-      - "IntegracionPostmanGithub.postman_collection.json" # Ruta al archivo JSON de la colección
+      - "IntegracionPostmanGithub.postman_collection.json" # Activación al modificar este archivo
 
 jobs:
   update-collection:
@@ -13,26 +13,47 @@ jobs:
       # Clonar el repositorio
       - uses: actions/checkout@v4
 
-      # Configurar Node.js y Axios para actualizar la colección
+      # Configurar Node.js para ejecutar el script
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "14"
 
+      # Instalar Axios para solicitudes HTTP
       - name: Install Axios
         run: npm install axios
 
-      # Crear un archivo temporal para ejecutar el script de Node.js
-      - name: Update Postman Collection
+      # Crear y ejecutar el script para actualizar la colección
+      - name: Update Postman Collection with Authorization
+        env:
+          POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }} # Secreto para la API de Postman
+          API_KEY_GITHUB: ${{ secrets.API_KEY_GITHUB }}   # Secreto para el Authorization
         run: |
           echo 'const axios = require("axios");
           const fs = require("fs");
-          const POSTMAN_API_KEY = "${{ secrets.POSTMAN_API_KEY }}";
-          const COLLECTION_UID = "3945000-2df8c701-2798-4695-a503-0631ed143efb";
-          const COLLECTION_FILE = "IntegracionPostmanGithub.postman_collection.json";
+
+          const POSTMAN_API_KEY = process.env.POSTMAN_API_KEY;
+          const API_KEY_GITHUB = process.env.API_KEY_GITHUB;
+          const COLLECTION_UID = "3945000-2df8c701-2798-4695-a503-0631ed143efb"; // UID de Postman
+          const COLLECTION_FILE = "IntegracionPostmanGithub.postman_collection.json"; // Archivo JSON
+
           async function updateCollection() {
             try {
-              const collectionData = JSON.parse(fs.readFileSync(COLLECTION_FILE, "utf8"));
+              // Leer el archivo JSON de la colección
+              let collectionData = JSON.parse(fs.readFileSync(COLLECTION_FILE, "utf8"));
+
+              // Reemplazar el valor del Authorization
+              collectionData.item.forEach((item) => {
+                if (item.request && item.request.header) {
+                  item.request.header.forEach((header) => {
+                    if (header.key.toLowerCase() === "authorization") {
+                      header.value = `Bearer ${API_KEY_GITHUB}`;
+                    }
+                  });
+                }
+              });
+
+              // Enviar la colección actualizada a Postman
               const response = await axios.put(
                 `https://api.getpostman.com/collections/${COLLECTION_UID}`,
                 { collection: collectionData },
@@ -43,11 +64,13 @@ jobs:
                   },
                 }
               );
+
               console.log("✅ Colección actualizada correctamente:", response.data);
             } catch (error) {
               console.error("❌ Error al actualizar la colección:", error.response?.data || error.message);
               process.exit(1);
             }
           }
+
           updateCollection();' > updateCollection.js
           node updateCollection.js
