@@ -83,7 +83,7 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": ${{ secrets.POSTMAN_API_KEY }}
+						"value": "Bearer"
 					},
 					{
 						"key": "Content-Type",
