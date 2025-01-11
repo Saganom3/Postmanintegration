@@ -11,50 +11,25 @@ jobs:
 
     steps:
       # Clonar el repositorio
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # Validar que el secreto API_KEY_GITHUB está configurado
-      - name: Validate API_KEY_GITHUB
-        run: |
-          if [ -z "${{ secrets.API_KEY_GITHUB }}" ]; then
-            echo "❌ API_KEY_GITHUB no está configurado en los secretos del repositorio."
-            exit 1
-          else
-            echo "✅ API_KEY_GITHUB está configurado correctamente."
-          fi
-
-      # Reemplazar {{API_KEY_GITHUB}} con el valor real del secreto
-      - name: Replace API Key in JSON
-        run: |
-          sed -i 's/{{API_KEY_GITHUB}}/'"${{ secrets.API_KEY_GITHUB }}"'/g' IntegracionPostmanGithub.postman_collection.json
-
-      # Mostrar el archivo JSON actualizado (opcional, para depuración)
-      - name: Debug Updated JSON
-        run: cat IntegracionPostmanGithub.postman_collection.json
-
-      # Configurar Node.js
+      # Configurar Node.js y Axios para actualizar la colección
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "14"
 
-      # Instalar Axios
       - name: Install Axios
         run: npm install axios
 
-      # Crear y ejecutar el script para actualizar la colección
+      # Crear un archivo temporal para ejecutar el script de Node.js
       - name: Update Postman Collection
-        env:
-          POSTMAN_API_KEY: ${{ secrets.API_KEY_GITHUB }}
         run: |
           echo 'const axios = require("axios");
           const fs = require("fs");
-
-          const POSTMAN_API_KEY = process.env.POSTMAN_API_KEY;
+          const POSTMAN_API_KEY = "${{ secrets.POSTMAN_API_KEY }}";
           const COLLECTION_UID = "3945000-2df8c701-2798-4695-a503-0631ed143efb";
           const COLLECTION_FILE = "IntegracionPostmanGithub.postman_collection.json";
-
           async function updateCollection() {
             try {
               const collectionData = JSON.parse(fs.readFileSync(COLLECTION_FILE, "utf8"));
@@ -74,6 +49,5 @@ jobs:
               process.exit(1);
             }
           }
-
           updateCollection();' > updateCollection.js
           node updateCollection.js
