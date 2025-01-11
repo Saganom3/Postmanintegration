@@ -34,7 +34,7 @@ jobs:
 
           const POSTMAN_API_KEY = process.env.POSTMAN_API_KEY;
           const API_KEY_GITHUB = process.env.API_KEY_GITHUB;
-          const COLLECTION_UID = "3945000-2df8c701-2798-4695-a503-0631ed143efb"; // UID de Postman
+          const COLLECTION_UID = "3945000-f297e8c1-f208-4439-9ea1-be16e05a2a5a"; // UID de Postman
           const COLLECTION_FILE = "IntegracionPostmanGithub.postman_collection.json"; // Archivo JSON
 
           async function updateCollection() {
