@@ -14,6 +14,19 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # Validar que el secreto API_KEY_GITHUB está configurado
+      - name: Validate API Key
+        run: |
+          if [ -z "${{ secrets.API_KEY_GITHUB }}" ]; then
+            echo "❌ API_KEY_GITHUB no está configurado en los secretos del repositorio."
+            exit 1
+          fi
+
+      # Reemplazar {{API_KEY_GITHUB}} con el valor real del secreto
+      - name: Replace API Key in JSON
+        run: |
+          sed -i 's/{{API_KEY_GITHUB}}/'"${{ secrets.API_KEY_GITHUB }}"'/g' IntegracionPostmanGithub.postman_collection.json
+
       # Configurar Node.js y Axios para actualizar la colección
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -22,15 +35,6 @@ jobs:
 
       - name: Install Axios
         run: npm install axios
-
-      # Reemplazar el marcador {{API_KEY}} con el valor real del secreto
-      - name: Replace API Key in JSON
-        run: |
-          if [ -z "${{ secrets.API_KEY_GITHUB }}" ]; then
-            echo "❌ API Key no está configurada. Verifica los secretos del repositorio."
-            exit 1
-          fi
-          sed -i 's/{{API_KEY}}/'"${{ secrets.API_KEY_GITHUB }}"'/g' IntegracionPostmanGithub.postman_collection.json
 
       # Crear un archivo temporal para ejecutar el script de Node.js
       - name: Update Postman Collection
