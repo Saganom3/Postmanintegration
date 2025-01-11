@@ -22,10 +22,10 @@ jobs:
       - name: Install Axios
         run: npm install axios
 
-      # Reemplazar el placeholder del secreto en el archivo JSON
+      # Reemplazar el marcador {{API_KEY}} con el valor real del secreto
       - name: Replace API Key in JSON
         run: |
-          sed -i 's/\${{ secrets.API_KEY_GITHUB }}/'"${{ secrets.API_KEY_GITHUB }}"'/g' IntegracionPostmanGithub.postman_collection.json
+          sed -i 's/{{API_KEY}}/'"${{ secrets.POSTMAN_API_KEY }}"'/g' IntegracionPostmanGithub.postman_collection.json
 
       # Crear un archivo temporal para ejecutar el script de Node.js
       - name: Update Postman Collection
@@ -35,7 +35,7 @@ jobs:
           const POSTMAN_API_KEY = process.env.POSTMAN_API_KEY;
           const COLLECTION_UID = "3945000-2df8c701-2798-4695-a503-0631ed143efb";
           const COLLECTION_FILE = "IntegracionPostmanGithub.postman_collection.json";
-
+          
           async function updateCollection() {
             try {
               const collectionData = JSON.parse(fs.readFileSync(COLLECTION_FILE, "utf8"));
