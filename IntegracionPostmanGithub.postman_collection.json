@@ -17,7 +17,7 @@
               "// Lista de flujos disponibles",
               "const options = [",
               "    \"1 - wwwonboarding\",",
-              "    \"2 - login\",",
+              "    \"2 - eeelogin\",",
               "    \"3 - cashInRegresion\",",
               "    \"4 - ddddcompras\",",
               "    \"5 - ssssscomprasCuotas\",",
