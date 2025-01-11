@@ -82,7 +82,7 @@
         "header": [
           {
             "key": "Authorization",
-            "value": "Bearer {{API_KEY}}"
+            "value": "Bearer {{API_KEY_GITHUB}}"
           },
           {
             "key": "Content-Type",
